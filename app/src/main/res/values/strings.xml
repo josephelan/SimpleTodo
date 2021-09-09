@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SimpleTodo</string>
     <string name="btn_add_task">Add Task</string>
+    <string name="et_add_task_text">Add a task here!</string>
 </resources>

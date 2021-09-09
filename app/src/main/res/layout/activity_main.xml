@@ -27,8 +27,11 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
         android:layout_toStartOf="@+id/btn_add"
+        android:autofillHints="Task to enter into task list"
         android:ems="10"
-        android:hint="Add a task here!" />
+        android:hint="@string/et_add_task_text"
+        android:inputType="none"
+        tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_item_list"
