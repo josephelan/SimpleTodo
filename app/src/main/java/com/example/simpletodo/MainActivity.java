@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     et_item = findViewById(R.id.et_item);
     rv_item_list = findViewById(R.id.rv_item_list);
 
-    rv_item_list.
+
 
     // List of strings for task list
     task_list = new ArrayList<>();
