@@ -20,9 +20,6 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* N/A 20 Sep 2021
-
-
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
