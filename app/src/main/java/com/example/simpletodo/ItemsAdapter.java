@@ -21,17 +21,24 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     void onItemLongClicked(int position);
   }
 
+  public interface OnClickListener {
+    void onItemClicked(int position);
+  }
+
   // Data members
   List<String> items_; // Data where tasks kept as string
   OnLongClickListener long_click_listener_;
+  OnClickListener click_listener_;
 
   /**
    * @brief ItemsAdapter() initializes data member to argument
    * @param items
    */
-  public ItemsAdapter(List<String> items, OnLongClickListener longClickListener) {
+  public ItemsAdapter(List<String> items, OnLongClickListener longClickListener,
+                      OnClickListener onClickListener) {
     items_ = items;
     long_click_listener_ = longClickListener;
+    click_listener_ = onClickListener;
   }
 
   @NonNull
@@ -86,6 +93,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
      */
     public void bind(String item) {
       tvItem_.setText(item);
+      tvItem_.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+          // Notify main of the position that was licked
+          click_listener_.onItemClicked(getAdapterPosition());
+        }
+      });
+
       tvItem_.setOnLongClickListener(new View.OnLongClickListener() {
 
         /**

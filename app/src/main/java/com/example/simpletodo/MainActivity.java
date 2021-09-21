@@ -1,9 +1,11 @@
 package com.example.simpletodo;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +17,18 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @brief Main activity for app
+ */
 public class MainActivity extends AppCompatActivity {
+
+  public static final String KEY_ITEM_TEXT = "item_text";
+  public static final String KEY_ITEM_POSITION = "item_position";
+  public static final int EDIT_TEXT_CODE = 10;
 
   List<String> task_list;
 
@@ -44,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     ItemsAdapter.OnLongClickListener long_click_listener = new ItemsAdapter.OnLongClickListener() {
 
       /**
-       * @brief Delete item from model and notify adapter
-       * @param position position of the clicked Viewholder in recyclerview
+       * Delete item from model and notify adapter
+       * @param position position of the clicked ViewHolder in recyclerview
        */
       @Override
       public void onItemLongClicked(int position) {
@@ -57,8 +65,24 @@ public class MainActivity extends AppCompatActivity {
         saveTasks();
       }
     };
+    ItemsAdapter.OnClickListener click_listener = new ItemsAdapter.OnClickListener() {
+      @Override
+      public void onItemClicked(int position) {
+        // Log.d("MainActivity", "Single Click: " + position);
 
-    itemsAdapter_ = new ItemsAdapter(task_list, long_click_listener);
+        // Create the new activity
+        Intent i = new Intent(MainActivity.this, EditActivity.class);
+
+        // Pass data being edited
+        i.putExtra(KEY_ITEM_TEXT, task_list.get(position));
+        i.putExtra(KEY_ITEM_POSITION, position);
+
+        // Display the activity
+        startActivityForResult(i, EDIT_TEXT_CODE);
+      }
+    };
+
+    itemsAdapter_ = new ItemsAdapter(task_list, long_click_listener, click_listener);
     rv_item_list.setAdapter(itemsAdapter_);
     rv_item_list.setLayoutManager(new LinearLayoutManager(this));
 
@@ -85,7 +109,41 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
-  // Persistence methods
+  /**
+   * @brief Handle result of edit activitity
+   *
+   * @param requestCode
+   * @param resultCode
+   * @param data data that was changed (Intent object)
+   */
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
+      // Retrieve the updated text value
+      String itemText = data.getStringExtra(KEY_ITEM_TEXT);
+
+      // Extract original position of the edited item
+      int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+
+      // Update model at the position with new item text
+      task_list.set(position, itemText);
+
+      // Notify the adapter
+      itemsAdapter_.notifyItemChanged(position);
+
+      // Persist the changes
+      saveTasks();
+      Toast.makeText(getApplicationContext(), "Task updated!", Toast.LENGTH_SHORT).show();
+
+    } else {
+      Log.w("MainActivity", "Unknown call to onActivityResult");
+    }
+  }
+
+  /*
+   *  Persistence methods
+   */
 
   /**
    * @return persistence data file
@@ -95,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   /**
-   * @brief load items from persistence into application run
+   * load items from persistence into application run
    */
   private void loadTasks() {
     try {
@@ -117,19 +175,3 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
