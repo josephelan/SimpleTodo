@@ -26,8 +26,6 @@ Here's a walkthrough of implemented user stories:
 
 <img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-https://github.com/josephelan/SimpleTodo/blob/master/walkthrough.gif
-
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
